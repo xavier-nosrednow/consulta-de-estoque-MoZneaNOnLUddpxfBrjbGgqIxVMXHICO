@@ -188,12 +188,31 @@
   .meta-row .value{ color:var(--blue); font-weight:500; margin-left:6px; }
   .meta-group{ display:flex; align-items:center; }
 
-  .previsao-btn{
-    display:flex; align-items:center; gap:8px; width:100%;
-    height:36px; padding:0 12px; background:var(--grey-50); border:1px solid var(--grey-100);
-    border-radius:6px; font-family:inherit; font-size:14px; color:#3d3d3d; cursor:pointer;
+  .product-top{ display:flex; align-items:flex-start; gap:8px; width:100%; }
+  .product-actions{
+    margin-left:auto; position:relative; display:flex; align-items:flex-start;
   }
-  .previsao-btn:active{ background:#eff0f0; }
+  .options-btn{
+    background:none; border:none; color:var(--grey-700); cursor:pointer;
+    width:34px; height:34px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; transition:background .15s ease;
+  }
+  .options-btn:hover, .options-btn:focus-visible{ background:rgba(6,111,222,0.08); }
+  .options-menu{
+    position:absolute; top:calc(100% + 8px); right:0;
+    min-width:180px; background:var(--white); border:1px solid var(--grey-100);
+    border-radius:10px; box-shadow:0 8px 22px rgba(0,0,0,0.08);
+    overflow:hidden; z-index:10;
+  }
+  .options-menu[hidden]{ display:none; }
+  .options-menu button{
+    width:100%; text-align:left; border:none; background:none;
+    padding:12px 16px; font-size:14px; color:var(--grey-950);
+    cursor:pointer; font-family:inherit;
+  }
+  .options-menu button:hover, .options-menu button:focus-visible{
+    background:var(--grey-50);
+  }
 
   /* ---------- Modal "Previsão de Chegada" (Figma node 6053:69818) ---------- */
   #previsao-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:40; }
@@ -227,7 +246,7 @@
 
   .modal-pedido{
     width:100%; border:1px solid var(--grey-100); border-radius:10px; padding:16px;
-    display:flex; flex-direction:column; gap:16px;
+    display:flex; flex-direction:column; gap:4px;
   }
   .modal-pedido .top{ display:flex; align-items:center; gap:8px; font-size:16px; font-weight:500; line-height:1.5; color:var(--info-blue); }
   .modal-pedido .bottom{ display:flex; align-items:center; justify-content:space-between; font-size:16px; color:var(--grey-500); }
@@ -322,7 +341,7 @@
     :root{ --content-width: 960px; }
     main{ padding:40px; }
     .product-list{
-      display:grid; grid-template-columns:1fr 1fr; gap:16px;
+      display:grid; flex:1fr 1fr; gap:16px;
       border:none; box-shadow:none;
     }
     .product{

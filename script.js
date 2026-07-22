@@ -77,6 +77,19 @@
               <span>${p.variacao}</span>
             </div>
           </div>
+          ${p.previsao ? `
+          <div class="product-actions">
+            <button type="button" class="options-btn" aria-haspopup="true" aria-expanded="false" aria-label="Abrir opções">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+                <circle cx="8" cy="3" r="1.5" fill="currentColor" />
+                <circle cx="8" cy="8" r="1.5" fill="currentColor" />
+                <circle cx="8" cy="13" r="1.5" fill="currentColor" />
+              </svg>
+            </button>
+            <div class="options-menu" hidden>
+              <button type="button" class="options-item">Previsão de Chegada</button>
+            </div>
+          </div>` : ''}
         </div>
         <div class="meta-row">
           <div class="meta-group"><span class="label">Estoque Loja:</span><span class="value">${p.estoqueLoja}</span></div>
@@ -86,15 +99,8 @@
         <div class="badge-disponibilidade">
           <span class="label">Disponibilidade Futura: </span><span class="data">${p.disponibilidadeFutura}</span>
         </div>` : ''}
-        ${p.previsao ? `
-        <button type="button" class="previsao-btn" aria-haspopup="dialog">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          <span>Previsão de Chegada</span>
-        </button>` : ''}
       `;
 
-      // Card não é mais um <button> nativo (evita botão aninhado por causa do
-      // botão "Previsão de Chegada"), então clique e teclado são recriados na mão.
       el.addEventListener('click', () => {
         selecionadoId = (selecionadoId === p.id) ? null : p.id;
         renderProdutos();
@@ -102,7 +108,7 @@
       });
 
       el.addEventListener('keydown', (e) => {
-        if (e.target !== el) return; // não interfere com o botão de previsão aninhado
+        if (e.target !== el) return; // não interfere com o botão de opções
 
         if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
           e.preventDefault();
@@ -126,17 +132,50 @@
         if (buttons[nextIndex]) buttons[nextIndex].focus();
       });
 
-      const previsaoBtn = el.querySelector('.previsao-btn');
-      if (previsaoBtn) {
-        previsaoBtn.addEventListener('click', (e) => {
+      const optionsBtn = el.querySelector('.options-btn');
+      if (optionsBtn) {
+        const optionsMenu = el.querySelector('.options-menu');
+        const optionsItem = el.querySelector('.options-item');
+
+        optionsBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          openPrevisaoModal(p, previsaoBtn);
+          const isOpen = optionsMenu.hasAttribute('hidden') === false;
+          if (isOpen) {
+            optionsMenu.hidden = true;
+            optionsBtn.setAttribute('aria-expanded', 'false');
+          } else {
+            closeAllOptionsMenus();
+            optionsMenu.hidden = false;
+            optionsBtn.setAttribute('aria-expanded', 'true');
+            optionsItem.focus();
+          }
+        });
+
+        optionsItem.addEventListener('click', (e) => {
+          e.stopPropagation();
+          optionsMenu.hidden = true;
+          optionsBtn.setAttribute('aria-expanded', 'false');
+          openPrevisaoModal(p, optionsBtn);
         });
       }
 
       list.appendChild(el);
     });
   }
+
+  function closeAllOptionsMenus(){
+    document.querySelectorAll('.options-menu').forEach(menu => {
+      menu.hidden = true;
+      const button = menu.closest('.product-actions')?.querySelector('.options-btn');
+      if (button) button.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.product-actions')) {
+      closeAllOptionsMenus();
+    }
+  });
 
   // ---------------------------------------------------------------------
   // Paginação
