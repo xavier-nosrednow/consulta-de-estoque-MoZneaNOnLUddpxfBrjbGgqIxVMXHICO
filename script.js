@@ -84,7 +84,7 @@
         </div>
         ${p.disponibilidadeFutura ? `
         <div class="badge-disponibilidade">
-          <span class="label">Disponibilidade: </span><span class="data">${p.disponibilidadeFutura}</span>
+          <span class="label">Disponibilidade Futura: </span><span class="data">${p.disponibilidadeFutura}</span>
         </div>` : ''}
         ${p.previsao ? `
         <button type="button" class="previsao-btn" aria-haspopup="dialog">
